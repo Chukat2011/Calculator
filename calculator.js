@@ -61,13 +61,15 @@ function updateDisplay() {
     display.innerText = currentInput;
 }
 
-// dat.GUI Theme Switcher
+// dat.GUI Theme Switcher and Mode Switcher
 const gui = new dat.GUI();
 const themeController = {
-    theme: 'light'
+    theme: 'light',
+    mode: 'calculator'
 };
 
 gui.add(themeController, 'theme', ['light', 'dark']).onChange(changeTheme);
+gui.add(themeController, 'mode', ['calculator', 'converter']).onChange(changeMode);
 
 function changeTheme(theme) {
     const calculator = document.querySelector('.calculator');
@@ -96,4 +98,39 @@ function changeTheme(theme) {
         default:
             break;
     }
+}
+
+function changeMode(mode) {
+    const calculator = document.querySelector('.calculator');
+    const converter = document.querySelector('.converter');
+
+    if (mode === 'calculator') {
+        calculator.style.display = 'block';
+        converter.style.display = 'none';
+    } else if (mode === 'converter') {
+        calculator.style.display = 'none';
+        converter.style.display = 'block';
+    }
+}
+
+// Converter Logic
+function convert() {
+    const fromUnit = document.getElementById('fromUnit').value;
+    const toUnit = document.getElementById('toUnit').value;
+    const value = parseFloat(document.getElementById('value').value);
+    let result;
+
+    if (fromUnit === 'm' && toUnit === 'km') {
+        result = value / 1000;
+    } else if (fromUnit === 'km' && toUnit === 'm') {
+        result = value * 1000;
+    } else if (fromUnit === 'usd' && toUnit === 'eur') {
+        result = value * 0.85; // Example rate
+    } else if (fromUnit === 'eur' && toUnit === 'usd') {
+        result = value * 1.18; // Example rate
+    } else {
+        result = value;
+    }
+
+    document.getElementById('result').innerText = `Result: ${result} ${toUnit}`;
 }

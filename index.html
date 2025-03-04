@@ -3,22 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculator with dat.GUI Theme</title>
+    <title>Calculator and Converter</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             height: 100vh;
             background-color: #f0f0f0;
+            margin: 0;
         }
-        .calculator {
+        .calculator, .converter {
             border: 1px solid #ccc;
             padding: 20px;
             background-color: #fff;
             border-radius: 5px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
         }
         .display {
             width: 100%;
@@ -38,6 +41,15 @@
             width: 100%;
             height: 40px;
             font-size: 1em;
+        }
+        .converter {
+            display: none;
+        }
+        .footer {
+            position: fixed;
+            bottom: 10px;
+            font-size: 0.9em;
+            color: #555;
         }
     </style>
 </head>
@@ -67,6 +79,39 @@
 
             <button onclick="clearDisplay()">C</button>
         </div>
+    </div>
+
+    <div class="converter">
+        <div>
+            <label for="fromUnit">From:</label>
+            <select id="fromUnit">
+                <option value="m">Meters</option>
+                <option value="km">Kilometers</option>
+                <option value="usd">USD</option>
+                <option value="eur">EUR</option>
+            </select>
+        </div>
+        <div>
+            <label for="toUnit">To:</label>
+            <select id="toUnit">
+                <option value="m">Meters</option>
+                <option value="km">Kilometers</option>
+                <option value="usd">USD</option>
+                <option value="eur">EUR</option>
+            </select>
+        </div>
+        <div>
+            <label for="value">Value:</label>
+            <input type="number" id="value" value="0">
+        </div>
+        <div>
+            <button onclick="convert()">Convert</button>
+        </div>
+        <div id="result"></div>
+    </div>
+
+    <div class="footer">
+        Created by <a href="https://github.com/Chukat2011/Calculator" target="_blank">VadimKarpDev</a>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.7/dat.gui.min.js"></script>
