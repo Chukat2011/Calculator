@@ -3,27 +3,79 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculator and Converter</title>
+    <title>Calculator, Converter, and Drawing</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             display: flex;
             flex-direction: column;
-            justify-content: center;
             align-items: center;
             height: 100vh;
-            background-color: #f0f0f0;
             margin: 0;
+            overflow: hidden;
+            background: linear-gradient(120deg, #ff7e5f, #feb47b);
+            background-size: 200% 200%;
+            animation: gradientAnimation 15s ease infinite;
         }
-        .calculator, .converter {
+        @keyframes gradientAnimation {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .container {
+            display: flex;
+            width: 100%;
+            height: 100%;
+        }
+        .sidebar {
+            width: 200px;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: #fff;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        .container:hover .sidebar {
+            opacity: 1;
+        }
+        .sidebar button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: rgba(255, 255, 255, 0.2);
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .sidebar button:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+        .content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+        .calculator, .converter, .drawing {
             border: 1px solid #ccc;
             padding: 20px;
-            background-color: #fff;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
             margin-bottom: 20px;
+            display: none;
+            width: 300px;
         }
-        .display {
+        .calculator .display, .converter .display {
             width: 100%;
             height: 40px;
             border: 1px solid #ccc;
@@ -31,6 +83,8 @@
             text-align: right;
             padding: 10px;
             font-size: 1.5em;
+            background-color: #fff;
+            border-radius: 5px;
         }
         .buttons {
             display: grid;
@@ -41,80 +95,160 @@
             width: 100%;
             height: 40px;
             font-size: 1em;
+            background-color: #ff7e5f;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
         }
-        .converter {
-            display: none;
+        .buttons button:hover {
+            background-color: #feb47b;
+        }
+        .drawing canvas {
+            border: 1px solid #ccc;
+            background-color: #fff;
+            border-radius: 10px;
+        }
+        .drawing .controls {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 10px;
+        }
+        .drawing .controls button {
+            margin-bottom: 10px;
+            background-color: #ff7e5f;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            padding: 10px;
+        }
+        .drawing .controls button:hover {
+            background-color: #feb47b;
         }
         .footer {
             position: fixed;
             bottom: 10px;
             font-size: 0.9em;
-            color: #555;
+            color: #fff;
+            z-index: 1;
+        }
+        .converter {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+        }
+        .converter label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .converter select, .converter input, .converter button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .converter button {
+            background-color: #ff7e5f;
+            color: #fff;
+            cursor: pointer;
+        }
+        .converter button:hover {
+            background-color: #feb47b;
+        }
+        .converter #result {
+            margin-top: 10px;
+            font-size: 1.2em;
+            color: #333;
         }
     </style>
 </head>
 <body>
-    <div class="calculator">
-        <div class="display" id="display">0</div>
-        <div class="buttons">
-            <button onclick="appendNumber('7')">7</button>
-            <button onclick="appendNumber('8')">8</button>
-            <button onclick="appendNumber('9')">9</button>
-            <button onclick="chooseOperation('/')">/</button>
-
-            <button onclick="appendNumber('4')">4</button>
-            <button onclick="appendNumber('5')">5</button>
-            <button onclick="appendNumber('6')">6</button>
-            <button onclick="chooseOperation('*')">*</button>
-
-            <button onclick="appendNumber('1')">1</button>
-            <button onclick="appendNumber('2')">2</button>
-            <button onclick="appendNumber('3')">3</button>
-            <button onclick="chooseOperation('-')">-</button>
-
-            <button onclick="appendNumber('0')">0</button>
-            <button onclick="appendNumber('.')">.</button>
-            <button onclick="compute()">=</button>
-            <button onclick="chooseOperation('+')">+</button>
-
-            <button onclick="clearDisplay()">C</button>
+    <div class="container">
+        <div class="sidebar">
+            <button onclick="showSection('calculator')">Calculator</button>
+            <button onclick="showSection('converter')">Converter</button>
+            <button onclick="showSection('drawing')">Drawing</button>
         </div>
-    </div>
+        <div class="content">
+            <div class="calculator">
+                <div class="display" id="display">0</div>
+                <div class="buttons">
+                    <button onclick="appendNumber('7')">7</button>
+                    <button onclick="appendNumber('8')">8</button>
+                    <button onclick="appendNumber('9')">9</button>
+                    <button onclick="chooseOperation('/')">/</button>
 
-    <div class="converter">
-        <div>
-            <label for="fromUnit">From:</label>
-            <select id="fromUnit">
-                <option value="m">Meters</option>
-                <option value="km">Kilometers</option>
-                <option value="usd">USD</option>
-                <option value="eur">EUR</option>
-            </select>
+                    <button onclick="appendNumber('4')">4</button>
+                    <button onclick="appendNumber('5')">5</button>
+                    <button onclick="appendNumber('6')">6</button>
+                    <button onclick="chooseOperation('*')">*</button>
+
+                    <button onclick="appendNumber('1')">1</button>
+                    <button onclick="appendNumber('2')">2</button>
+                    <button onclick="appendNumber('3')">3</button>
+                    <button onclick="chooseOperation('-')">-</button>
+
+                    <button onclick="appendNumber('0')">0</button>
+                    <button onclick="appendNumber('.')">.</button>
+                    <button onclick="compute()">=</button>
+                    <button onclick="chooseOperation('+')">+</button>
+
+                    <button onclick="clearDisplay()">C</button>
+                </div>
+            </div>
+
+            <div class="converter">
+                <div>
+                    <label for="fromUnit">From:</label>
+                    <select id="fromUnit">
+                        <option value="m">Meters</option>
+                        <option value="km">Kilometers</option>
+                        <option value="usd">USD</option>
+                        <option value="eur">EUR</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="toUnit">To:</label>
+                    <select id="toUnit">
+                        <option value="m">Meters</option>
+                        <option value="km">Kilometers</option>
+                        <option value="usd">USD</option>
+                        <option value="eur">EUR</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="value">Value:</label>
+                    <input type="number" id="value" value="0">
+                </div>
+                <div>
+                    <button onclick="convert()">Convert</button>
+                </div>
+                <div id="result"></div>
+            </div>
+
+            <div class="drawing">
+                <canvas id="drawingCanvas" width="600" height="400"></canvas>
+                <div class="controls">
+                    <button onclick="clearCanvas()">Clear Canvas</button>
+                    <button onclick="setTool('brush')">Brush</button>
+                    <button onclick="setTool('eraser')">Eraser</button>
+                    <input type="range" id="brushSize" min="1" max="50" value="5" oninput="updateBrushSize()">
+                </div>
+            </div>
         </div>
-        <div>
-            <label for="toUnit">To:</label>
-            <select id="toUnit">
-                <option value="m">Meters</option>
-                <option value="km">Kilometers</option>
-                <option value="usd">USD</option>
-                <option value="eur">EUR</option>
-            </select>
-        </div>
-        <div>
-            <label for="value">Value:</label>
-            <input type="number" id="value" value="0">
-        </div>
-        <div>
-            <button onclick="convert()">Convert</button>
-        </div>
-        <div id="result"></div>
     </div>
 
     <div class="footer">
-        Created by <a href="https://github.com/Chukat2011/Calculator" target="_blank">VadimKarpDev</a>
+        Created by <a href="https://github.com/VadimKarpDev" target="_blank">VadimKarpDev</a>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.7/dat.gui.min.js"></script>
     <script src="calculator.js"></script>
+    <script src="drawing.js"></script>
+    <script src="parallax.js"></script>
 </body>
 </html>

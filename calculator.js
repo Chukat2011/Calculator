@@ -61,55 +61,22 @@ function updateDisplay() {
     display.innerText = currentInput;
 }
 
-// dat.GUI Theme Switcher and Mode Switcher
-const gui = new dat.GUI();
-const themeController = {
-    theme: 'light',
-    mode: 'calculator'
-};
-
-gui.add(themeController, 'theme', ['light', 'dark']).onChange(changeTheme);
-gui.add(themeController, 'mode', ['calculator', 'converter']).onChange(changeMode);
-
-function changeTheme(theme) {
-    const calculator = document.querySelector('.calculator');
-    const buttons = document.querySelectorAll('.buttons button');
-    const display = document.querySelector('.display');
-
-    switch (theme) {
-        case 'light':
-            calculator.style.backgroundColor = '#fff';
-            display.style.backgroundColor = '#fff';
-            display.style.color = '#000';
-            buttons.forEach(button => {
-                button.style.backgroundColor = '#f0f0f0';
-                button.style.color = '#000';
-            });
-            break;
-        case 'dark':
-            calculator.style.backgroundColor = '#333';
-            display.style.backgroundColor = '#333';
-            display.style.color = '#fff';
-            buttons.forEach(button => {
-                button.style.backgroundColor = '#555';
-                button.style.color = '#fff';
-            });
-            break;
-        default:
-            break;
-    }
-}
-
-function changeMode(mode) {
+// Show Section
+function showSection(section) {
     const calculator = document.querySelector('.calculator');
     const converter = document.querySelector('.converter');
+    const drawing = document.querySelector('.drawing');
 
-    if (mode === 'calculator') {
+    calculator.style.display = 'none';
+    converter.style.display = 'none';
+    drawing.style.display = 'none';
+
+    if (section === 'calculator') {
         calculator.style.display = 'block';
-        converter.style.display = 'none';
-    } else if (mode === 'converter') {
-        calculator.style.display = 'none';
+    } else if (section === 'converter') {
         converter.style.display = 'block';
+    } else if (section === 'drawing') {
+        drawing.style.display = 'block';
     }
 }
 
