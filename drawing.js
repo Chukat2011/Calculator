@@ -43,3 +43,10 @@ function setTool(newTool) {
 function updateBrushSize() {
     brushSize = document.getElementById('brushSize').value;
 }
+
+function saveCanvas() {
+    const link = document.createElement('a');
+    link.download = 'drawing.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+}
