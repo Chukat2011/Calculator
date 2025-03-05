@@ -66,10 +66,18 @@ function showSection(section) {
     const calculator = document.querySelector('.calculator');
     const converter = document.querySelector('.converter');
     const drawing = document.querySelector('.drawing');
+    const games = document.querySelector('.games');
+    const auth = document.querySelector('.auth');
+    const people = document.querySelector('.people');
+    const messenger = document.querySelector('.messenger');
 
     calculator.style.display = 'none';
     converter.style.display = 'none';
     drawing.style.display = 'none';
+    games.style.display = 'none';
+    auth.style.display = 'none';
+    people.style.display = 'none';
+    messenger.style.display = 'none';
 
     if (section === 'calculator') {
         calculator.style.display = 'block';
@@ -77,6 +85,16 @@ function showSection(section) {
         converter.style.display = 'block';
     } else if (section === 'drawing') {
         drawing.style.display = 'block';
+    } else if (section === 'games') {
+        games.style.display = 'block';
+    } else if (section === 'auth') {
+        auth.style.display = 'block';
+    } else if (section === 'people') {
+        people.style.display = 'block';
+        loadUsers();
+    } else if (section === 'messenger') {
+        messenger.style.display = 'block';
+        loadMessages();
     }
 }
 

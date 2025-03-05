@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculator, Converter, and Drawing</title>
+    <title>Calculator, Converter, Drawing, Games, and Messenger</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -66,7 +66,7 @@
             position: relative;
             z-index: 1;
         }
-        .calculator, .converter, .drawing {
+        .calculator, .converter, .drawing, .games, .auth, .people, .messenger {
             border: 1px solid #ccc;
             padding: 20px;
             background-color: rgba(255, 255, 255, 0.8);
@@ -166,6 +166,107 @@
             font-size: 1.2em;
             color: #333;
         }
+        .games {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .games canvas {
+            border: 1px solid #ccc;
+            background-color: #fff;
+            border-radius: 10px;
+        }
+        .games .controls {
+            display: flex;
+            justify-content: center;
+            margin-top: 10px;
+        }
+        .games .controls button {
+            margin: 0 10px;
+            background-color: #ff7e5f;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            padding: 10px;
+        }
+        .games .controls button:hover {
+            background-color: #feb47b;
+        }
+        .auth input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .auth button {
+            width: 100%;
+            padding: 10px;
+            background-color: #ff7e5f;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .auth button:hover {
+            background-color: #feb47b;
+        }
+        .people ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        .people li {
+            padding: 10px;
+            border-bottom: 1px solid #ccc;
+            cursor: pointer;
+        }
+        .people li:hover {
+            background-color: #f0f0f0;
+        }
+        .messenger {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .messenger .chat {
+            width: 100%;
+            height: 300px;
+            border: 1px solid #ccc;
+            overflow-y: scroll;
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: #fff;
+            border-radius: 5px;
+        }
+        .messenger .chat .message {
+            margin-bottom: 10px;
+        }
+        .messenger .chat .message .sender {
+            font-weight: bold;
+        }
+        .messenger .chat .message .content {
+            margin-left: 10px;
+        }
+        .messenger input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .messenger button {
+            width: 100%;
+            padding: 10px;
+            background-color: #ff7e5f;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .messenger button:hover {
+            background-color: #feb47b;
+        }
     </style>
 </head>
 <body>
@@ -174,6 +275,10 @@
             <button onclick="showSection('calculator')">Calculator</button>
             <button onclick="showSection('converter')">Converter</button>
             <button onclick="showSection('drawing')">Drawing</button>
+            <button onclick="showSection('games')">Games</button>
+            <button onclick="showSection('auth')">Login/Register</button>
+            <button onclick="showSection('people')">People</button>
+            <button onclick="showSection('messenger')">Messenger</button>
         </div>
         <div class="content">
             <div class="calculator">
@@ -236,21 +341,62 @@
                 <canvas id="drawingCanvas" width="600" height="400"></canvas>
                 <div class="controls">
                     <button onclick="clearCanvas()">Clear Canvas</button>
-                    <button onclick="setTool('brush')">Brush</button>
-                    <button onclick="setTool('eraser')">Eraser</button>
                     <button onclick="saveCanvas()">Save Image</button>
-                    <input type="range" id="brushSize" min="1" max="50" value="5" oninput="updateBrushSize()">
                 </div>
+            </div>
+
+            <div class="games">
+                <canvas id="gameCanvas" width="600" height="400"></canvas>
+                <div class="controls">
+                    <button onclick="moveForward()">Forward</button>
+                    <button onclick="moveBackward()">Backward</button>
+                    <button onclick="turnLeft()">Turn Left</button>
+                    <button onclick="turnRight()">Turn Right</button>
+                </div>
+            </div>
+
+            <div class="auth">
+                <h2>Login/Register</h2>
+                <input type="text" id="username" placeholder="Username">
+                <input type="password" id="password" placeholder="Password">
+                <button onclick="register()">Register</button>
+                <button onclick="login()">Login</button>
+                <div id="message"></div>
+            </div>
+
+            <div class="people">
+                <h2>People</h2>
+                <ul id="userList"></ul>
+            </div>
+
+            <div class="messenger">
+                <h2>Messenger</h2>
+                <div class="chat" id="chat"></div>
+                <input type="text" id="messageInput" placeholder="Type your message">
+                <button onclick="sendMessage()">Send</button>
             </div>
         </div>
     </div>
 
     <div class="footer">
-        Created by <a href="https://github.com/Chukat2011/Calculator" target="_blank">VadimKarpDev</a>
+        Created by <a href="https://github.com/VadimKarpDev" target="_blank">VadimKarpDev</a>
     </div>
 
     <script src="calculator.js"></script>
     <script src="drawing.js"></script>
+    <script src="games.js"></script>
+    <script src="auth.js"></script>
+    <script src="people.js"></script>
+    <script src="messenger.js"></script>
     <script src="parallax.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            if (localStorage.getItem('currentUser')) {
+                showSection('people');
+            } else {
+                showSection('auth');
+            }
+        });
+    </script>
 </body>
 </html>

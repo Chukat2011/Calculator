@@ -1,7 +1,6 @@
 const canvas = document.getElementById('drawingCanvas');
 const ctx = canvas.getContext('2d');
 let isDrawing = false;
-let tool = 'brush';
 let brushSize = 5;
 
 canvas.addEventListener('mousedown', startDrawing);
@@ -19,7 +18,7 @@ function draw(e) {
 
     ctx.lineWidth = brushSize;
     ctx.lineCap = 'round';
-    ctx.strokeStyle = tool === 'brush' ? 'black' : 'white';
+    ctx.strokeStyle = 'black';
 
     ctx.lineTo(e.offsetX, e.offsetY);
     ctx.stroke();
@@ -34,14 +33,6 @@ function stopDrawing() {
 
 function clearCanvas() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-}
-
-function setTool(newTool) {
-    tool = newTool;
-}
-
-function updateBrushSize() {
-    brushSize = document.getElementById('brushSize').value;
 }
 
 function saveCanvas() {
